@@ -17,8 +17,8 @@ Before you build and run the application, ensure you have the following installe
 2. **Set OpenCV Directory**: If OpenCV isn't in the default Chocolatey path, set the `OpenCV_DIR` environment variable to the path where the OpenCV build files (`OpenCVConfig.cmake` or `opencv-config.cmake`) are.
 
 3. **Clone the Repository**:
-   
-   git clone https://github.com/yourusername/target-aid.git
+   ```bash
+   git clone https://github.com/alittahu/target-aid.git
    cd target-aid
 4. Build with CMake:
     ```bash
@@ -32,7 +32,7 @@ Before you build and run the application, ensure you have the following installe
 
 2. **Clone the Repository**:
     ```bash
-    git clone https://github.com/yourusername/target-aid.git
+    git clone https://github.com/alittahu/target-aid.git
     cd target-aid
 3. **Build with CMake**:
     ```bash
