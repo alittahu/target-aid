@@ -67,13 +67,6 @@ namespace CircleDetector {
 
         HoughCircles(blur, circles, cv::HOUGH_GRADIENT, 1, minDist, cannyThreshold, accumulatorThreshold, minRadius,
                      maxRadius);
-
-        for (const auto &circle: circles) {
-            cv::Point center = cv::Point(circle[0], circle[1]);
-            int radius = static_cast<int>(circle[2]);
-            cv::circle(image, center, radius, cv::Scalar(255, 0, 255), 3, cv::LINE_AA);
-            cv::circle(image, center, 1, cv::Scalar(0, 100, 100), 3, cv::LINE_AA); // Draw circle center
-        }
     }
 
 
@@ -90,6 +83,13 @@ namespace CircleDetector {
 
         // Detect and draw circles
         detectAndDrawCircles(image, minRadius, maxRadius, minDist, cannyThreshold, accumulatorThreshold, circles);
+
+        for (const auto &circle: circles) {
+            cv::Point center = cv::Point(circle[0], circle[1]);
+            int radius = static_cast<int>(circle[2]);
+            cv::circle(image, center, radius, cv::Scalar(255, 0, 255), 3, cv::LINE_AA);
+            cv::circle(image, center, 1, cv::Scalar(0, 100, 100), 3, cv::LINE_AA); // Draw circle center
+        }
 
         cv::imshow("Detected Circles", image);
         cv::waitKey(0);
@@ -122,6 +122,7 @@ namespace CircleDetector {
                 cv::circle(frame, circle.center, circle.radius, cv::Scalar(0, 255, 0), 2);
                 cv::putText(frame, std::to_string(circle.id), circle.center, cv::FONT_HERSHEY_SIMPLEX, 0.5,
                             cv::Scalar(255, 0, 0), 2);
+                cv::circle(frame, circle.center, 1, cv::Scalar(0, 0, 255), 3, cv::LINE_AA); // Draw circle center
             }
 
             cv::imshow("Tracked Circles", frame);
