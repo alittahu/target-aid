@@ -20,6 +20,7 @@ public:
     void setBulletWeight(double bulletWeight);
     void setBallisticCoefficient(double ballisticCoefficient);
     void setZeroRange(double zeroRange);
+    double getBulletDropRate(double distance) const;
 
 private:
     std::string name;  // Name or model of the gun

@@ -25,13 +25,17 @@ link_libraries(
 
 add_executable(target_aid
         cpp/main.cpp
-        cpp/CircleDetector.cpp
-        headers/CircleDetector.h
+        cpp/TargetDetector.cpp
+        headers/TargetDetector.h
         headers/Gun.h
         headers/json.hpp
         cpp/Gun.cpp
         cpp/ShootingRange.cpp
-        headers/ShootingRange.h)
+        headers/ShootingRange.h
+        cpp/TargetTracker.cpp
+        headers/TargetTracker.h
+        cpp/ProcessMedia.cpp
+        headers/ProcessMedia.h)
 
 add_custom_command(
         TARGET target_aid POST_BUILD

@@ -8,7 +8,7 @@
 
 class ShootingRange {
 private:
-    std::optional<size_t> selectedGunIndex;
+    std::optional<Gun> selectedGun;
     std::vector<Gun> gunList;
     double distanceToTargetMeters;
     static ShootingRange *instance;
@@ -40,5 +40,5 @@ public:
 
     void selectPreviousGun();
 
-    const std::optional<Gun>& getSelectedGun() const;
+    std::optional<Gun> getSelectedGun() const;
 };

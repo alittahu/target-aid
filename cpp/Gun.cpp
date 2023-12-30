@@ -43,3 +43,12 @@ void Gun::setBallisticCoefficient(double ballisticCoefficient) {
 void Gun::setZeroRange(double zeroRange) {
     Gun::zeroRange = zeroRange;
 }
+
+//TODO: make it more realistic, current implementation is bad
+double Gun::getBulletDropRate(double distance) const {
+    const double g = 9.81;  // Gravity acceleration (m/s^2)
+    double timeInFlight = distance / muzzleVelocity;
+    double drop = 0.5 * g * timeInFlight * timeInFlight;
+
+    return drop;
+}
