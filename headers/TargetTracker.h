@@ -17,7 +17,7 @@ namespace TargetAid {
 
         void update(const std::vector<cv::Vec3f> &detectedCircles);
 
-        const std::map<int, Circle> &getTrackedCircles() const;
+        [[nodiscard]] const std::map<int, Circle> &getTrackedCircles() const;
 
     private:
         std::map<int, Circle> trackedCircles;

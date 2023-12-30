@@ -25,7 +25,7 @@ public:
     static ShootingRange *getInstance(int distanceToTargetMeters = 100);
 
     // Getters and setters
-    double getDistanceToTargetMeters() const;
+    [[nodiscard]] double getDistanceToTargetMeters() const;
 
     void setDistanceToTargetMeters(double distanceToTargetMeters);
 
@@ -34,11 +34,11 @@ public:
 
     void removeGun(const std::string &gunName);
 
-    const std::vector<Gun> &getGunList() const;
+    [[nodiscard]] const std::vector<Gun> &getGunList() const;
 
     void selectNextGun();
 
     void selectPreviousGun();
 
-    std::optional<Gun> getSelectedGun() const;
+    [[nodiscard]] std::optional<Gun> getSelectedGun() const;
 };

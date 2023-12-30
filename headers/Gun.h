@@ -8,11 +8,11 @@ public:
     Gun(std::string name, double muzzleVelocity, double bulletWeight, double ballisticCoefficient, double zeroRange);
 
     // Getters
-    std::string getName() const;
-    double getMuzzleVelocity() const;
-    double getBulletWeight() const;
-    double getBallisticCoefficient() const;
-    double getZeroRange() const;
+    [[nodiscard]] std::string getName() const;
+    [[nodiscard]] double getMuzzleVelocity() const;
+    [[nodiscard]] double getBulletWeight() const;
+    [[nodiscard]] double getBallisticCoefficient() const;
+    [[nodiscard]] double getZeroRange() const;
 
     // Setters
     void setName(const std::string &name);
@@ -20,7 +20,7 @@ public:
     void setBulletWeight(double bulletWeight);
     void setBallisticCoefficient(double ballisticCoefficient);
     void setZeroRange(double zeroRange);
-    double getBulletDropRate(double distance) const;
+    [[nodiscard]] double getBulletDropRate(double distance) const;
 
 private:
     std::string name;  // Name or model of the gun

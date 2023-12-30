@@ -12,13 +12,13 @@ namespace TargetAid {
 
         // Iterate over detected circles and try to match them with existing tracks
         for (const auto &detected: detectedCircles) {
-            cv::Point detectedCenter(detected[0], detected[1]);
-            int detectedRadius = detected[2];
+            cv::Point detectedCenter(static_cast<int>(detected[0]), static_cast<int>(detected[1]));
+            int detectedRadius = static_cast<int>(detected[2]);
             bool foundMatch = false;
 
             for (auto &tracked: trackedCircles) {
                 cv::Point trackedCenter = tracked.second.center;
-                int distance = cv::norm(trackedCenter - detectedCenter);
+                int distance = static_cast<int>(cv::norm(trackedCenter - detectedCenter));
 
                 // If the detected circle is close to a tracked one, update the track
                 if (distance < detectedRadius / 2) {
