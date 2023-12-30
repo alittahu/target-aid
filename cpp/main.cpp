@@ -9,21 +9,30 @@ int main(int argc, char **argv) {
     }
 
     std::string filePath = argv[1];
-    std::string fileExtension = filePath.substr(filePath.find_last_of('.') + 1);
 
-    int minRadius = 50;
-    int maxRadius = 100;
-    int cannyThreshold = 100;
-    int accumulatorThreshold = 50;
-    int maxFrameMissingTracking = 10;
-
-    if (fileExtension == "png" || fileExtension == "jpg" || fileExtension == "jpeg") {
+    // Try to open as an image first
+    cv::Mat image = cv::imread(filePath, cv::IMREAD_COLOR);
+    if (!image.empty()) {
+        // It's an image
+        int minRadius = 50;
+        int maxRadius = 100;
+        int cannyThreshold = 100;
+        int accumulatorThreshold = 50;
         CircleDetector::processImage(filePath, minRadius, maxRadius, cannyThreshold, accumulatorThreshold);
-    } else if (fileExtension == "mp4" || fileExtension == "avi") {
-        CircleDetector::processVideo(filePath, maxFrameMissingTracking, minRadius, maxRadius, cannyThreshold,
-                                     accumulatorThreshold);
     } else {
-        std::cout << "File format not recognized." << std::endl;
+        // Try to open as a video
+        cv::VideoCapture cap(filePath);
+        if (cap.isOpened()) {
+            // It's a video
+            int minRadius = 50;
+            int maxRadius = 100;
+            int cannyThreshold = 100;
+            int accumulatorThreshold = 50;
+            int maxFrameMissingTracking = 10;
+            CircleDetector::processVideo(filePath, maxFrameMissingTracking, minRadius, maxRadius, cannyThreshold, accumulatorThreshold);
+        } else {
+            std::cout << "File format not recognized or file not found." << std::endl;
+        }
     }
 
     return 0;
