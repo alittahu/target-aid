@@ -10,25 +10,22 @@ int main(int argc, char **argv) {
 
     std::string filePath = argv[1];
 
+    int minRadius = 50;
+    int maxRadius = 100;
+    int cannyThreshold = 100;
+    int accumulatorThreshold = 50;
+    int maxFrameMissingTracking = 10;
+
     // Try to open as an image first
     cv::Mat image = cv::imread(filePath, cv::IMREAD_COLOR);
     if (!image.empty()) {
         // It's an image
-        int minRadius = 50;
-        int maxRadius = 100;
-        int cannyThreshold = 100;
-        int accumulatorThreshold = 50;
         CircleDetector::processImage(filePath, minRadius, maxRadius, cannyThreshold, accumulatorThreshold);
     } else {
         // Try to open as a video
         cv::VideoCapture cap(filePath);
         if (cap.isOpened()) {
             // It's a video
-            int minRadius = 50;
-            int maxRadius = 100;
-            int cannyThreshold = 100;
-            int accumulatorThreshold = 50;
-            int maxFrameMissingTracking = 10;
             CircleDetector::processVideo(filePath, maxFrameMissingTracking, minRadius, maxRadius, cannyThreshold, accumulatorThreshold);
         } else {
             std::cout << "File format not recognized or file not found." << std::endl;
