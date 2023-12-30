@@ -106,7 +106,6 @@ namespace CircleDetector {
 
         CircleTracker tracker(maxFrameMissingTracking);
         cv::Mat frame;
-
         while (cap.read(frame)) {
             float minDist = frame.rows / 8;
             std::vector<cv::Vec3f> circles;

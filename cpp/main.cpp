@@ -19,13 +19,12 @@ int main(int argc, char **argv) {
     // Try to open as an image first
     cv::Mat image = cv::imread(filePath, cv::IMREAD_COLOR);
     if (!image.empty()) {
-        // It's an image
         CircleDetector::processImage(filePath, minRadius, maxRadius, cannyThreshold, accumulatorThreshold);
     } else {
         // Try to open as a video
         cv::VideoCapture cap(filePath);
         if (cap.isOpened()) {
-            // It's a video
+            cap.release();
             CircleDetector::processVideo(filePath, maxFrameMissingTracking, minRadius, maxRadius, cannyThreshold, accumulatorThreshold);
         } else {
             std::cout << "File format not recognized or file not found." << std::endl;
