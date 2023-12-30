@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.16)
 project(target_aid)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -22,4 +22,6 @@ link_libraries(
 )
 
 add_executable(target_aid
-        cpp/main.cpp)
+        cpp/main.cpp
+        cpp/CircleDetector.cpp
+        headers/CircleDetector.h)
