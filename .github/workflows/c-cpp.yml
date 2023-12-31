@@ -1,0 +1,43 @@
+name: ARM64 OpenCV Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [arm64]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+      with:
+        platforms: ${{ matrix.platform }}
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake g++ wget unzip
+        sudo apt-get install -y libavcodec-dev libavformat-dev libswscale-dev
+        sudo apt-get install -y libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev
+
+    - name: Build OpenCV
+      run: |
+        wget -O opencv.zip https://github.com/opencv/opencv/archive/4.9.0.zip
+        unzip opencv.zip
+        mkdir -p build && cd build
+        cmake ../opencv-4.9.0 -DWITH_FFMPEG=ON -DWITH_GSTREAMER=ON
+        cmake --build .
+
+    - name: Build Project with CMake
+      run: |
+        mkdir -p build && cd build
+        cmake ..
+        cmake --build .
