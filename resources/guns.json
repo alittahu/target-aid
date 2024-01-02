@@ -2,57 +2,25 @@
   {
     "name": "Rifle .22 LR",
     "muzzleVelocity": 330,
-    "bulletWeight": 2.6,
-    "ballisticCoefficient": 0.130,
-    "zeroRange": 50
+    "sightHeight" : 0.035,
+    "zeroRange": 50,
+    "bullet": {
+      "name": "CCI Mini-Mag High Velocity .22 LR",
+      "bulletWeight": 40,
+      "ballisticCoefficient": 0.130,
+      "dragCoefficient": 0.5
+    }
   },
   {
-    "name": "Air Rifle",
+    "name": "Gamo Whisper Fusion Mach 1 Air Rifle",
     "muzzleVelocity": 250,
-    "bulletWeight": 0.5,
-    "ballisticCoefficient": 0.035,
-    "zeroRange": 30
-  },
-  {
-    "name": "AR-15 (5.56mm)",
-    "muzzleVelocity": 975,
-    "bulletWeight": 3.56,
-    "ballisticCoefficient": 0.304,
-    "zeroRange": 100
-  },
-  {
-    "name": "Remington 700 (.308 Winchester)",
-    "muzzleVelocity": 800,
-    "bulletWeight": 9.7,
-    "ballisticCoefficient": 0.470,
-    "zeroRange": 100
-  },
-  {
-    "name": "Glock 19 (9mm)",
-    "muzzleVelocity": 375,
-    "bulletWeight": 7.5,
-    "ballisticCoefficient": 0.149,
-    "zeroRange": 50
-  },
-  {
-    "name": "Beretta 92FS (9mm)",
-    "muzzleVelocity": 381,
-    "bulletWeight": 7.45,
-    "ballisticCoefficient": 0.152,
-    "zeroRange": 50
-  },
-  {
-    "name": "AK-47 (7.62x39mm)",
-    "muzzleVelocity": 710,
-    "bulletWeight": 7.97,
-    "ballisticCoefficient": 0.275,
-    "zeroRange": 100
-  },
-  {
-    "name": "M16 Rifle (5.56mm)",
-    "muzzleVelocity": 960,
-    "bulletWeight": 4.0,
-    "ballisticCoefficient": 0.305,
-    "zeroRange": 100
+    "sightHeight" : 0.04,
+    "zeroRange": 30,
+    "bullet": {
+      "name": "Gamo Magnum Pellets",
+      "bulletWeight": 150,
+      "ballisticCoefficient": 0.035,
+      "dragCoefficient": 0.5
+    }
   }
 ]

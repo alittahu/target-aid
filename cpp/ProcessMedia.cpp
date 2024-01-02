@@ -70,5 +70,4 @@ namespace TargetAid {
             if (cv::waitKey(30) >= 0) break;
         }
     }
-
 }

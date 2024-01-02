@@ -22,7 +22,7 @@ namespace TargetAid {
     }
 
     cv::Point calculateAimPoint(const cv::Point &targetCenter, const Gun &gun, double distanceToTarget) {
-        double bulletDrop = gun.getBulletDropRate(distanceToTarget);
-        return {targetCenter.x, targetCenter.y - static_cast<int>(bulletDrop)};
+        //double bulletDrop = gun.getBulletDropRate(distanceToTarget);
+        //return {targetCenter.x, targetCenter.y - static_cast<int>(bulletDrop)};
     }
 }
