@@ -18,7 +18,7 @@ void ShootingRange::loadGunsFromJson(const std::string &filename) {
 
     for (const auto &gunJson: gunData) {
         Bullet bullet(gunJson["bullet"]["name"],
-                gunJson["bullet"]["ballisticCoefficient"],
+                      gunJson["bullet"]["ballisticCoefficient"],
                       gunJson["bullet"]["bulletWeight"],
                       gunJson["bullet"]["dragCoefficient"]);
 
@@ -36,7 +36,7 @@ void ShootingRange::loadGunsFromJson(const std::string &filename) {
     if (!gunList.empty()) {
         selectedGun = gunList.at(0);
         std::cout << "Default selected gun's name: " << selectedGun->getName() << std::endl;
-        std::cout << "Default selected gun's bullet's name: " << selectedGun->getBullet().getName() << std::endl;
+        std::cout << "Default selected gun's bullet: " << selectedGun->getBullet().getName() << std::endl;
     }
 }
 

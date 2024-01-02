@@ -113,7 +113,6 @@ namespace TargetAid {
         this->processEveryNthFrame = processEveryNthFrame;
     }
 
-    //TODO: implement
     void TargetDetector::enableAimAssistant(int targetDistance) {
         std::cout << "Aim assistant enabled" << std::endl;
 
