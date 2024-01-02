@@ -52,14 +52,20 @@ namespace TargetAid {
 
         TargetTracker tracker(maxTrackingFramesMissing);
         cv::Mat frame;
+        std::vector<cv::Vec3f> circles;
+        int frameCounter = 0;
+
         while (cap.read(frame)) {
-            std::vector<cv::Vec3f> circles;
+            if(resizeImage)
+                cv::resize(frame, frame, cv::Size(), resizeScale, resizeScale);
 
-            // Detect circles in the current frame
-            detectCircles(frame, circles);
+            if (!skipFrames || (skipFrames && frameCounter % processEveryNthFrame == 0)) {
+                // Detect circles in the current frame
+                detectCircles(frame, circles);
 
-            // Update the tracker with the detected circles
-            tracker.update(circles);
+                // Update the tracker with the detected circles
+                tracker.update(circles);
+            }
 
             // Draw tracked circles with their IDs
             for (const auto &tracked: tracker.getTrackedCircles()) {
@@ -74,6 +80,8 @@ namespace TargetAid {
 
             cv::imshow("Tracked Targets", frame);
             if (cv::waitKey(30) >= 0) break;
+
+            frameCounter++;
         }
     }
 
@@ -133,16 +141,29 @@ namespace TargetAid {
         TargetDetector::maxTrackingFramesMissing = maxTrackingFramesMissing;
     }
 
-    TargetDetector::TargetDetector(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold, int maxTrackingFrameMissing)
+    TargetDetector::TargetDetector(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold,
+                                   int maxTrackingFrameMissing)
             : minRadius(minRadius), maxRadius(maxRadius), cannyThreshold(cannyThreshold),
               accumulatorThreshold(accumulatorThreshold), maxTrackingFramesMissing(maxTrackingFrameMissing) {
     }
 
     TargetDetector *
-    TargetDetector::getInstance(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold, int maxTrackingFrameMissing) {
+    TargetDetector::getInstance(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold,
+                                int maxTrackingFrameMissing) {
         if (instance == nullptr) {
-            instance = new TargetDetector(minRadius, maxRadius, cannyThreshold, accumulatorThreshold, maxTrackingFrameMissing);
+            instance = new TargetDetector(minRadius, maxRadius, cannyThreshold, accumulatorThreshold,
+                                          maxTrackingFrameMissing);
         }
         return instance;
+    }
+
+    void TargetDetector::enableImageResizingForVideo(double resizeScale) {
+        resizeImage = true;
+        this->resizeScale = resizeScale;
+    }
+
+    void TargetDetector::enableSkipFramesForVideo(int processEveryNthFrame) {
+        skipFrames = true;
+        this->processEveryNthFrame = processEveryNthFrame;
     }
 }

@@ -13,6 +13,11 @@ int main(int argc, char **argv) {
     std::string filePath = argv[1];
 
     // NOTE: Change detector variables here before calling process
+    TargetDetector *targetDetector = TargetDetector::getInstance();
+
+    targetDetector->enableSkipFramesForVideo(2);
+    targetDetector->enableImageResizingForVideo(0.5);
+
     TargetDetector::getInstance()->process(filePath);
 
     return 0;

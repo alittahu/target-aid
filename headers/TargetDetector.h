@@ -16,6 +16,13 @@ namespace TargetAid {
         int accumulatorThreshold; // Accumulator threshold for the circle centers at the detection stage. The smaller it is, the more false circles may be detected.
         int maxTrackingFramesMissing;
 
+        // Performance variables
+        bool resizeImage = false;
+        double resizeScale = 0.5;
+
+        bool skipFrames = false;
+        int processEveryNthFrame = 2;
+
         void detectCircles(cv::Mat &image, std::vector<cv::Vec3f> &circles) const;
         static void drawCircle(cv::Mat &frame, const cv::Vec3f &circle);
         void processImage(const std::string &filePath);
@@ -40,6 +47,10 @@ namespace TargetAid {
         void setMaxRadius(int maxRadius);
         void setCannyThreshold(int cannyThreshold);
         void setAccumulatorThreshold(int accumulatorThreshold);
+
+        // Performance upgrade functions
+        void enableImageResizingForVideo(double resizeScale = 0.5);
+        void enableSkipFramesForVideo(int processEveryNthFrame = 2);
 
         void process(const std::string &filePath);
     };
