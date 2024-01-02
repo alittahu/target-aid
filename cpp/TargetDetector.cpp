@@ -15,6 +15,84 @@ namespace TargetAid {
                      maxRadius);
     }
 
+    void TargetDetector::drawCircle(cv::Mat &frame, const cv::Vec3f &circle) {
+        cv::Point center(static_cast<int>(circle[0]), static_cast<int>(circle[1]));
+        int radius = static_cast<int>(circle[2]);
+        cv::circle(frame, center, radius, cv::Scalar(255, 0, 255), 3, cv::LINE_AA);
+        cv::circle(frame, center, 1, cv::Scalar(0, 100, 100), 3, cv::LINE_AA);
+    }
+
+    void TargetDetector::processImage(const std::string &filePath) {
+        cv::Mat image = cv::imread(filePath, cv::IMREAD_COLOR);
+        if (image.empty()) {
+            std::cout << "Error opening image!" << std::endl;
+            return;
+        }
+
+        // Vector to store detected circles
+        std::vector<cv::Vec3f> circles;
+
+        // Detect circles
+        detectCircles(image, circles);
+
+        for (const auto &circle: circles) {
+            drawCircle(image, circle);
+        }
+
+        cv::imshow("Detected Targets", image);
+        cv::waitKey(0);
+    }
+
+    void TargetDetector::processVideo(const std::string &filePath) {
+        cv::VideoCapture cap(filePath);
+        if (!cap.isOpened()) {
+            std::cout << "Error opening video stream or file!" << std::endl;
+            return;
+        }
+
+        TargetTracker tracker(maxTrackingFramesMissing);
+        cv::Mat frame;
+        while (cap.read(frame)) {
+            std::vector<cv::Vec3f> circles;
+
+            // Detect circles in the current frame
+            detectCircles(frame, circles);
+
+            // Update the tracker with the detected circles
+            tracker.update(circles);
+
+            // Draw tracked circles with their IDs
+            for (const auto &tracked: tracker.getTrackedCircles()) {
+                const Circle &circle = tracked.second;
+                drawCircle(frame, cv::Vec3f(
+                        static_cast<float>(circle.center.x),
+                        static_cast<float>(circle.center.y),
+                        static_cast<float>(circle.radius)));
+                cv::putText(frame, std::to_string(circle.id), circle.center, cv::FONT_HERSHEY_SIMPLEX, 0.5,
+                            cv::Scalar(255, 0, 0), 2);
+            }
+
+            cv::imshow("Tracked Targets", frame);
+            if (cv::waitKey(30) >= 0) break;
+        }
+    }
+
+    void TargetDetector::process(const std::string &filePath) {
+        cv::Mat image = cv::imread(filePath, cv::IMREAD_COLOR);
+        if (!image.empty()) {
+            processImage(filePath);
+        } else {
+            // Try to open as a video
+            cv::VideoCapture cap(filePath);
+            if (cap.isOpened()) {
+                cap.release();
+                processVideo(filePath);
+            } else {
+                std::cout << "File format not recognized or file not found." << std::endl;
+            }
+        }
+    }
+
     int TargetDetector::getMinRadius() const {
         return minRadius;
     }
@@ -47,88 +125,24 @@ namespace TargetAid {
         TargetDetector::accumulatorThreshold = accumulatorThreshold;
     }
 
-    TargetDetector::TargetDetector(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold)
+    int TargetDetector::getMaxTrackingFramesMissing() const {
+        return maxTrackingFramesMissing;
+    }
+
+    void TargetDetector::setMaxTrackingFramesMissing(int maxTrackingFramesMissing) {
+        TargetDetector::maxTrackingFramesMissing = maxTrackingFramesMissing;
+    }
+
+    TargetDetector::TargetDetector(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold, int maxTrackingFrameMissing)
             : minRadius(minRadius), maxRadius(maxRadius), cannyThreshold(cannyThreshold),
-              accumulatorThreshold(accumulatorThreshold) {
+              accumulatorThreshold(accumulatorThreshold), maxTrackingFramesMissing(maxTrackingFrameMissing) {
     }
 
     TargetDetector *
-    TargetDetector::getInstance(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold) {
+    TargetDetector::getInstance(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold, int maxTrackingFrameMissing) {
         if (instance == nullptr) {
-            instance = new TargetDetector(minRadius, maxRadius, cannyThreshold, accumulatorThreshold);
+            instance = new TargetDetector(minRadius, maxRadius, cannyThreshold, accumulatorThreshold, maxTrackingFrameMissing);
         }
         return instance;
-    }
-
-    void TargetDetector::processImage(const std::string &filePath) {
-        cv::Mat image = cv::imread(filePath, cv::IMREAD_COLOR);
-        if (image.empty()) {
-            std::cout << "Error opening image!" << std::endl;
-            return;
-        }
-
-        std::vector<cv::Vec3f> circles;  // Vector to store detected circles
-
-        // Detect and draw circles
-        detectCircles(image, circles);
-
-        for (const auto &circle: circles) {
-            cv::Point center = cv::Point(static_cast<int>(circle[0]), static_cast<int>(circle[1]));
-            int radius = static_cast<int>(circle[2]);
-            cv::circle(image, center, radius, cv::Scalar(255, 0, 255), 3, cv::LINE_AA);
-            cv::circle(image, center, 1, cv::Scalar(0, 100, 100), 3, cv::LINE_AA);
-        }
-
-        cv::imshow("Detected Targets", image);
-        cv::waitKey(0);
-    }
-
-
-    void TargetDetector::processVideo(const std::string &filePath, int maxFrameMissingTracking) {
-        cv::VideoCapture cap(filePath);
-        if (!cap.isOpened()) {
-            std::cout << "Error opening video stream or file!" << std::endl;
-            return;
-        }
-
-        TargetTracker tracker(maxFrameMissingTracking);
-        cv::Mat frame;
-        while (cap.read(frame)) {
-            std::vector<cv::Vec3f> circles;
-
-            // Detect circles in the current frame
-            detectCircles(frame, circles);
-
-            // Update the tracker with the detected circles
-            tracker.update(circles);
-
-            // Draw tracked circles with their IDs
-            for (const auto &tracked: tracker.getTrackedCircles()) {
-                const Circle &circle = tracked.second;
-                cv::circle(frame, circle.center, circle.radius, cv::Scalar(0, 255, 0), 2);
-                cv::putText(frame, std::to_string(circle.id), circle.center, cv::FONT_HERSHEY_SIMPLEX, 0.5,
-                            cv::Scalar(255, 0, 0), 2);
-                cv::circle(frame, circle.center, 1, cv::Scalar(0, 0, 255), 3, cv::LINE_AA);
-            }
-
-            cv::imshow("Tracked Circles", frame);
-            if (cv::waitKey(30) >= 0) break;
-        }
-    }
-
-    void TargetDetector::process(const std::string &filePath) {
-        cv::Mat image = cv::imread(filePath, cv::IMREAD_COLOR);
-        if (!image.empty()) {
-            processImage(filePath);
-        } else {
-            // Try to open as a video
-            cv::VideoCapture cap(filePath);
-            if (cap.isOpened()) {
-                cap.release();
-                processVideo(filePath);
-            } else {
-                std::cout << "File format not recognized or file not found." << std::endl;
-            }
-        }
     }
 }

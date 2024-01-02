@@ -12,6 +12,7 @@ int main(int argc, char **argv) {
 
     std::string filePath = argv[1];
 
+    // NOTE: Change detector variables here before calling process
     TargetDetector::getInstance()->process(filePath);
 
     return 0;
