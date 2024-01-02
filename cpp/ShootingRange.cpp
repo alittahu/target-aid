@@ -29,10 +29,11 @@ void ShootingRange::loadGunsFromJson(const std::string &filename) {
                 gunJson["sightHeight"],
                 bullet
         );
-        gunList.push_back(gun);
 
         double aimAdjustment = getAimAdjustment(gun);
         gun.setAimAdjustment(aimAdjustment);
+
+        gunList.push_back(gun);
 
         std::cout << "AimAssistant: Loaded gun with name: " << gun.getName() << std::endl;
     }
@@ -160,13 +161,13 @@ double ShootingRange::getAimAdjustment(Gun &gun) const {
     double timeToTarget = distanceToTarget / muzzleVelocity;
 
     // Calculate bullet drop at target distance
-    double bulletDropAtTarget = 0.5 * gravity * std::pow(timeToTarget, 2);
+    double bulletDropAtTarget = 0.5 * getGravity() * std::pow(timeToTarget, 2);
 
     // Calculate time of flight at zero range
     double timeToZeroRange = zeroRange / muzzleVelocity;
 
     // Calculate bullet drop at zero range
-    double bulletDropAtZero = 0.5 * gravity * std::pow(timeToZeroRange, 2);
+    double bulletDropAtZero = 0.5 * getGravity() * std::pow(timeToZeroRange, 2);
 
     // Calculate adjustment from zero range, converting to centimeters
     double adjustmentFromZeroRange = (bulletDropAtTarget - bulletDropAtZero + sightHeight) * 100.0;
@@ -174,6 +175,10 @@ double ShootingRange::getAimAdjustment(Gun &gun) const {
     std::cout << "-- " << gun.getName() << " Total Adjustment for Aiming (in cm): " << adjustmentFromZeroRange << std::endl;
 
     return adjustmentFromZeroRange;
+}
+
+double ShootingRange::getTargetDiameter() const {
+    return targetDiameter;
 }
 
 

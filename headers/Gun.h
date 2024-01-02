@@ -30,5 +30,5 @@ private:
     double sightHeight; // in meters, vertical distance between the gun's sight and the barrel
     double zeroRange;  // in meters, indicating the distance at which the firearm is sighted
     Bullet bullet; // bullet used with the gun
-    double aimAdjustment; // calculated later if aim assistant is enabled
+    double aimAdjustment = 0.0; // calculated later if aim assistant is enabled
 };

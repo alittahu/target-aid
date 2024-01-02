@@ -12,6 +12,7 @@ private:
     std::vector<Gun> gunList;
 
     double distanceToTargetMeters; // Target distance in meters
+    const double targetDiameter = 30; // Target diameter in cm
     const double airDensity = 1.225; // Air density in kg/m^3 (at sea level)
     const double gravity = 9.81; // Acceleration due to gravity in meters/second^2
 
@@ -41,4 +42,5 @@ public:
     [[nodiscard]] double getAirDensity() const;
     [[nodiscard]] double getGravity() const;
     [[nodiscard]] double getAimAdjustment(Gun &gun) const; // Total adjustment for aiming (in cm)
+    [[nodiscard]] double getTargetDiameter() const;
 };

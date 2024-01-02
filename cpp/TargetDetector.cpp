@@ -22,6 +22,12 @@ namespace TargetAid {
         cv::circle(frame, center, 1, cv::Scalar(0, 100, 100), 3, cv::LINE_AA);
     }
 
+    void TargetDetector::drawAimPoint(cv::Mat &frame, const cv::Point &point) {
+        const int size = 10; // Size of the 'X', adjust as needed
+        cv::line(frame, cv::Point(point.x - size, point.y - size), cv::Point(point.x + size, point.y + size), cv::Scalar(0, 0, 255), 2);
+        cv::line(frame, cv::Point(point.x + size, point.y - size), cv::Point(point.x - size, point.y + size), cv::Scalar(0, 0, 255), 2);
+    }
+
     void TargetDetector::processImage(const std::string &filePath) {
         cv::Mat image = cv::imread(filePath, cv::IMREAD_COLOR);
         if (image.empty()) {
@@ -55,6 +61,16 @@ namespace TargetAid {
         std::vector<cv::Vec3f> circles;
         int frameCounter = 0;
 
+        // Aim adjustment settings
+        double aimAdjustmentCm;
+        double targetDiameter = ShootingRange::getInstance()->getTargetDiameter();
+        if(aimAssistant){
+            std::optional<Gun> selectedGun = ShootingRange::getInstance()->getSelectedGun();
+            if(selectedGun.has_value()){
+                aimAdjustmentCm = selectedGun->getAimAdjustment();
+            }
+        }
+
         while (cap.read(frame)) {
             if(resizeImage)
                 cv::resize(frame, frame, cv::Size(), resizeScale, resizeScale);
@@ -76,6 +92,20 @@ namespace TargetAid {
                         static_cast<float>(circle.radius)));
                 cv::putText(frame, std::to_string(circle.id), circle.center, cv::FONT_HERSHEY_SIMPLEX, 0.5,
                             cv::Scalar(255, 0, 0), 2);
+
+                if(aimAssistant){
+                    double diameterInPixels = 2 * circle.radius; // Diameter in pixels
+                    double pixelsPerCm = diameterInPixels / targetDiameter; // PPCM
+
+                    // Convert aim adjustment from cm to pixels
+                    double aimAdjustmentPx = aimAdjustmentCm * pixelsPerCm;
+
+                    // Calculate the aiming point
+                    cv::Point aimPoint(circle.center.x, circle.center.y - aimAdjustmentPx);
+
+                    // Draw the aiming point (an 'X')
+                    drawAimPoint(frame, aimPoint);
+                }
             }
 
             cv::imshow("Tracked Targets", frame);

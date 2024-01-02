@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 
     targetDetector->enableSkipFramesForVideo(2);
     targetDetector->enableImageResizingForVideo(0.5);
-    targetDetector->enableAimAssistant(100);
+    targetDetector->enableAimAssistant(60);
 
     TargetDetector::getInstance()->process(filePath);
 

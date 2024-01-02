@@ -57,6 +57,8 @@ namespace TargetAid {
         void enableAimAssistant(int targetDistance = 100);
 
         void process(const std::string &filePath);
+
+        static void drawAimPoint(cv::Mat &frame, const cv::Point &point);
     };
 }
 
