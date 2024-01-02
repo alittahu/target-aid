@@ -22,7 +22,7 @@ namespace TargetAid {
     private:
         std::map<int, Circle> trackedCircles;
         int nextCircleId = 0;
-        int maxFramesMissing; // Maximum number of frames a circle can be missing
+        int maxFramesMissing; // Maximum number of frames a circle can be missing before the track is considered lost. Increase this for more lenient tracking, decrease for stricter tracking.
         std::map<int, int> lastSeenFrame;
         int currentFrame = 0;
     };
