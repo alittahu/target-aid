@@ -101,6 +101,27 @@ namespace TargetAid {
         }
     }
 
+    void TargetDetector::enableImageResizingForVideo(double resizeScale) {
+        std::cout << "Resizing image for video enabled. Scale is: " << resizeScale <<std::endl;
+        resizeImage = true;
+        this->resizeScale = resizeScale;
+    }
+
+    void TargetDetector::enableSkipFramesForVideo(int processEveryNthFrame) {
+        std::cout << "Skip frame for video enabled. Skipping every " << processEveryNthFrame << ". frame from detection" <<std::endl;
+        skipFrames = true;
+        this->processEveryNthFrame = processEveryNthFrame;
+    }
+
+    //TODO: implement
+    void TargetDetector::enableAimAssistant(int targetDistance) {
+        std::cout << "Aim assistant enabled" << std::endl;
+
+        aimAssistant = true;
+
+        ShootingRange *shootingRange = ShootingRange::getInstance(targetDistance);
+    }
+
     int TargetDetector::getMinRadius() const {
         return minRadius;
     }
@@ -155,15 +176,5 @@ namespace TargetAid {
                                           maxTrackingFrameMissing);
         }
         return instance;
-    }
-
-    void TargetDetector::enableImageResizingForVideo(double resizeScale) {
-        resizeImage = true;
-        this->resizeScale = resizeScale;
-    }
-
-    void TargetDetector::enableSkipFramesForVideo(int processEveryNthFrame) {
-        skipFrames = true;
-        this->processEveryNthFrame = processEveryNthFrame;
     }
 }

@@ -37,9 +37,3 @@ void Bullet::setDragCoefficient(double dragCoefficient) {
 Bullet::Bullet(std::string name, double ballisticCoefficient, double bulletWeight, double dragCoefficient) : name(
         std::move(name)), ballisticCoefficient(ballisticCoefficient), bulletWeight(bulletWeight), dragCoefficient(dragCoefficient) {
 }
-
-Bullet::Bullet(const nlohmann::json& bulletJson)
-        : bulletWeight(bulletJson["bulletWeight"]),
-          ballisticCoefficient(bulletJson["ballisticCoefficient"]),
-          dragCoefficient(bulletJson["dragCoefficient"]) {
-}
