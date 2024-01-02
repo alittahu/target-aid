@@ -14,6 +14,7 @@ public:
     [[nodiscard]] double getZeroRange() const;
     [[nodiscard]] Bullet &getBullet();
     [[nodiscard]] double getSightHeight() const;
+    [[nodiscard]] double getAimAdjustment() const;
 
     // Setters
     void setName(const std::string &name);
@@ -21,6 +22,7 @@ public:
     void setZeroRange(double zeroRange);
     void setSightHeight(double sightHeight);
     void setBullet(const Bullet &bullet);
+    void setAimAdjustment(double aimAdjustment);
 
 private:
     std::string name;  // Name or model of the gun
@@ -28,4 +30,5 @@ private:
     double sightHeight; // in meters, vertical distance between the gun's sight and the barrel
     double zeroRange;  // in meters, indicating the distance at which the firearm is sighted
     Bullet bullet; // bullet used with the gun
+    double aimAdjustment = 0.0; // calculated later if aim assistant is enabled
 };

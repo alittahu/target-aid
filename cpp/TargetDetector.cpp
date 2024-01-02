@@ -22,6 +22,12 @@ namespace TargetAid {
         cv::circle(frame, center, 1, cv::Scalar(0, 100, 100), 3, cv::LINE_AA);
     }
 
+    void TargetDetector::drawAimPoint(cv::Mat &frame, const cv::Point &point) {
+        const int size = 10; // Size of the 'X', adjust as needed
+        cv::line(frame, cv::Point(point.x - size, point.y - size), cv::Point(point.x + size, point.y + size), cv::Scalar(0, 0, 255), 2);
+        cv::line(frame, cv::Point(point.x + size, point.y - size), cv::Point(point.x - size, point.y + size), cv::Scalar(0, 0, 255), 2);
+    }
+
     void TargetDetector::processImage(const std::string &filePath) {
         cv::Mat image = cv::imread(filePath, cv::IMREAD_COLOR);
         if (image.empty()) {
@@ -55,6 +61,16 @@ namespace TargetAid {
         std::vector<cv::Vec3f> circles;
         int frameCounter = 0;
 
+        // Aim adjustment settings
+        double aimAdjustmentCm;
+        double targetDiameter = ShootingRange::getInstance()->getTargetDiameter();
+        if(aimAssistant){
+            std::optional<Gun> selectedGun = ShootingRange::getInstance()->getSelectedGun();
+            if(selectedGun.has_value()){
+                aimAdjustmentCm = selectedGun->getAimAdjustment();
+            }
+        }
+
         while (cap.read(frame)) {
             if(resizeImage)
                 cv::resize(frame, frame, cv::Size(), resizeScale, resizeScale);
@@ -67,7 +83,7 @@ namespace TargetAid {
                 tracker.update(circles);
             }
 
-            // Draw tracked circles with their IDs
+            // Draw on image
             for (const auto &tracked: tracker.getTrackedCircles()) {
                 const Circle &circle = tracked.second;
                 drawCircle(frame, cv::Vec3f(
@@ -76,6 +92,20 @@ namespace TargetAid {
                         static_cast<float>(circle.radius)));
                 cv::putText(frame, std::to_string(circle.id), circle.center, cv::FONT_HERSHEY_SIMPLEX, 0.5,
                             cv::Scalar(255, 0, 0), 2);
+
+                if(aimAssistant){
+                    double diameterInPixels = 2 * circle.radius; // Diameter in pixels
+                    double pixelsPerCm = diameterInPixels / targetDiameter; // PPCM
+
+                    // Convert aim adjustment from cm to pixels
+                    double aimAdjustmentPx = aimAdjustmentCm * pixelsPerCm;
+
+                    // Calculate the aiming point
+                    cv::Point aimPoint(circle.center.x, circle.center.y - aimAdjustmentPx);
+
+                    // Draw the aiming point (an 'X')
+                    drawAimPoint(frame, aimPoint);
+                }
             }
 
             cv::imshow("Tracked Targets", frame);
@@ -99,6 +129,26 @@ namespace TargetAid {
                 std::cout << "File format not recognized or file not found." << std::endl;
             }
         }
+    }
+
+    void TargetDetector::enableImageResizingForVideo(double resizeScale) {
+        std::cout << "Resizing image for video enabled. Scale is: " << resizeScale <<std::endl;
+        resizeImage = true;
+        this->resizeScale = resizeScale;
+    }
+
+    void TargetDetector::enableSkipFramesForVideo(int processEveryNthFrame) {
+        std::cout << "Skip frame for video enabled. Skipping every " << processEveryNthFrame << ". frame from detection" <<std::endl;
+        skipFrames = true;
+        this->processEveryNthFrame = processEveryNthFrame;
+    }
+
+    void TargetDetector::enableAimAssistantForVideo(int targetDistance) {
+        std::cout << "Aim assistant enabled" << std::endl;
+
+        aimAssistant = true;
+
+        ShootingRange *shootingRange = ShootingRange::getInstance(targetDistance);
     }
 
     int TargetDetector::getMinRadius() const {
@@ -147,23 +197,12 @@ namespace TargetAid {
               accumulatorThreshold(accumulatorThreshold), maxTrackingFramesMissing(maxTrackingFrameMissing) {
     }
 
-    TargetDetector *
-    TargetDetector::getInstance(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold,
+    TargetDetector *TargetDetector::getInstance(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold,
                                 int maxTrackingFrameMissing) {
         if (instance == nullptr) {
             instance = new TargetDetector(minRadius, maxRadius, cannyThreshold, accumulatorThreshold,
                                           maxTrackingFrameMissing);
         }
         return instance;
-    }
-
-    void TargetDetector::enableImageResizingForVideo(double resizeScale) {
-        resizeImage = true;
-        this->resizeScale = resizeScale;
-    }
-
-    void TargetDetector::enableSkipFramesForVideo(int processEveryNthFrame) {
-        skipFrames = true;
-        this->processEveryNthFrame = processEveryNthFrame;
     }
 }

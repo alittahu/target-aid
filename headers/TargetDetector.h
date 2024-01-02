@@ -19,9 +19,10 @@ namespace TargetAid {
         // Performance variables
         bool resizeImage = false;
         double resizeScale = 0.5;
-
         bool skipFrames = false;
         int processEveryNthFrame = 2;
+
+        bool aimAssistant = false;
 
         void detectCircles(cv::Mat &image, std::vector<cv::Vec3f> &circles) const;
         static void drawCircle(cv::Mat &frame, const cv::Vec3f &circle);
@@ -52,7 +53,12 @@ namespace TargetAid {
         void enableImageResizingForVideo(double resizeScale = 0.5);
         void enableSkipFramesForVideo(int processEveryNthFrame = 2);
 
+        // Aim detection. Default targetDistance is 100 meters
+        void enableAimAssistantForVideo(int targetDistance = 100);
+
         void process(const std::string &filePath);
+
+        static void drawAimPoint(cv::Mat &frame, const cv::Point &point);
     };
 }
 

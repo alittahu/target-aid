@@ -6,7 +6,6 @@
 class Bullet {
 public:
     Bullet(std::string name, double ballisticCoefficient, double bulletWeight, double dragCoefficient);
-    explicit Bullet(const nlohmann::json& bulletJson);
 
     // Getters
     [[nodiscard]] const std::string &getName() const;
