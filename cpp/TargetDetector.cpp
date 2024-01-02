@@ -83,7 +83,7 @@ namespace TargetAid {
                 tracker.update(circles);
             }
 
-            // Draw tracked circles with their IDs
+            // Draw on image
             for (const auto &tracked: tracker.getTrackedCircles()) {
                 const Circle &circle = tracked.second;
                 drawCircle(frame, cv::Vec3f(
