@@ -34,8 +34,8 @@ add_executable(target_aid
         headers/ShootingRange.h
         cpp/TargetTracker.cpp
         headers/TargetTracker.h
-        cpp/ProcessMedia.cpp
-        headers/ProcessMedia.h)
+        cpp/Bullet.cpp
+        headers/Bullet.h)
 
 add_custom_command(
         TARGET target_aid POST_BUILD

@@ -17,15 +17,20 @@ void ShootingRange::loadGunsFromJson(const std::string &filename) {
     file >> gunData;
 
     for (const auto &gunJson: gunData) {
-        Gun gun(gunJson["name"], gunJson["muzzleVelocity"], gunJson["bulletWeight"],
-                gunJson["ballisticCoefficient"], gunJson["zeroRange"]);
+        Gun gun(
+                gunJson["name"],
+                gunJson["muzzleVelocity"],
+                gunJson["zeroRange"],
+                gunJson["sightHeight"],
+                static_cast<Bullet>(gunJson["bullet"])
+        );
         gunList.push_back(gun);
         std::cout << "Loaded gun with name: " << gun.getName() << std::endl;
     }
 
     if (!gunList.empty()) {
         selectedGun = gunList.at(0);
-        std::cout << "Default selected gun's name: " << getSelectedGun()->getName() << std::endl;
+        std::cout << "Default selected gun's name: " << selectedGun->getName() << std::endl;
     }
 }
 
@@ -125,6 +130,59 @@ void ShootingRange::selectPreviousGun() {
 
 std::optional<Gun> ShootingRange::getSelectedGun() const {
     return selectedGun;
+}
+
+const double ShootingRange::getAirDensity() const {
+    return airDensity;
+}
+
+const double ShootingRange::getGravity() const {
+    return gravity;
+}
+
+const double ShootingRange::getAimAdjustment(Gun &gun) const {
+    Bullet bullet = gun.getBullet();
+
+    // Calculate initial bullet energy
+    double bulletEnergy = 0.5 * bullet.getBulletWeight() * std::pow(gun.getMuzzleVelocity(), 2);
+
+    // Function to calculate velocity loss due to air resistance
+    auto velocityLossDueToAirResistance = [&](double distance, double velocity) {
+        double frontalArea = std::pow((bullet.getBulletWeight() / bullet.getBallisticCoefficient()), 2.0 / 3.0);
+        double dragForce = 0.5 * airDensity * bullet.getDragCoefficient() * frontalArea * std::pow(velocity, 2);
+        double energyLoss = dragForce * distance;
+        double velocityLoss = std::sqrt(2 * energyLoss / bullet.getBulletWeight());
+        return velocityLoss;
+    };
+
+    // Calculate velocity at target distance
+    double velocityLoss = velocityLossDueToAirResistance(getDistanceToTargetMeters(), gun.getMuzzleVelocity());
+    double velocityAtTarget = gun.getMuzzleVelocity() - velocityLoss;
+
+    // Calculate revised time of flight to target
+    double averageVelocity = (gun.getMuzzleVelocity() + velocityAtTarget) / 2.0;
+    double timeToTarget = getDistanceToTargetMeters() / averageVelocity;
+
+    // Calculate bullet drop at target distance
+    double bulletDropAtTarget = 0.5 * gravity * std::pow(timeToTarget, 2);
+
+    // Calculate bullet drop at zero range
+    double timeToZeroRange = gun.getZeroRange() / (gun.getMuzzleVelocity() +
+                                                   (gun.getMuzzleVelocity() -
+                                                    velocityLossDueToAirResistance(gun.getZeroRange(),
+                                                                                   gun.getMuzzleVelocity())) /
+                                                   2.0);
+    double bulletDropAtZero = 0.5 * gravity * std::pow(timeToZeroRange, 2);
+
+    // Calculate adjustment from zero range
+    double adjustmentFromZeroRange = bulletDropAtTarget - bulletDropAtZero;
+
+    // Calculate total adjustment for aiming, converting to centimeters
+    double totalAdjustment = (adjustmentFromZeroRange - gun.getSightHeight()) * 100.0;
+
+    std::cout << gun.getName() << " Total Adjustment for Aiming (in cm): " << totalAdjustment << std::endl;
+
+    return totalAdjustment;
 }
 
 

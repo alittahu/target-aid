@@ -2,30 +2,30 @@
 
 #include <string>
 #include <vector>
+#include "Bullet.h"
 
 class Gun {
 public:
-    Gun(std::string name, double muzzleVelocity, double bulletWeight, double ballisticCoefficient, double zeroRange);
+    Gun(std::string name, double muzzleVelocity, double zeroRange, double sightHeight, Bullet bullet);
 
     // Getters
     [[nodiscard]] std::string getName() const;
     [[nodiscard]] double getMuzzleVelocity() const;
-    [[nodiscard]] double getBulletWeight() const;
-    [[nodiscard]] double getBallisticCoefficient() const;
     [[nodiscard]] double getZeroRange() const;
+    [[nodiscard]] Bullet &getBullet();
+    [[nodiscard]] double getSightHeight() const;
 
     // Setters
     void setName(const std::string &name);
     void setMuzzleVelocity(double muzzleVelocity);
-    void setBulletWeight(double bulletWeight);
-    void setBallisticCoefficient(double ballisticCoefficient);
     void setZeroRange(double zeroRange);
-    [[nodiscard]] double getBulletDropRate(double distance) const;
+    void setSightHeight(double sightHeight);
+    void setBullet(const Bullet &bullet);
 
 private:
     std::string name;  // Name or model of the gun
     double muzzleVelocity;  // in meters per second
-    double bulletWeight;  // in grams
-    double ballisticCoefficient;
+    double sightHeight; // in meters, vertical distance between the gun's sight and the barrel
     double zeroRange;  // in meters, indicating the distance at which the firearm is sighted
+    Bullet bullet; // bullet used with the gun
 };

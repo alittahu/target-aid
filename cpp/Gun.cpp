@@ -1,8 +1,9 @@
 #include "Gun.h"
 
-Gun::Gun(std::string name, double muzzleVelocity, double bulletWeight, double ballisticCoefficient, double zeroRange)
-        : name(std::move(name)), muzzleVelocity(muzzleVelocity), bulletWeight(bulletWeight),
-          ballisticCoefficient(ballisticCoefficient), zeroRange(zeroRange) {}
+#include <utility>
+
+Gun::Gun(std::string name, double muzzleVelocity, double zeroRange, double sightHeight, Bullet bullet)
+        : name(std::move(name)), muzzleVelocity(muzzleVelocity), zeroRange(zeroRange), sightHeight(sightHeight), bullet(std::move(bullet)) {}
 
 std::string Gun::getName() const {
     return name;
@@ -10,14 +11,6 @@ std::string Gun::getName() const {
 
 double Gun::getMuzzleVelocity() const {
     return muzzleVelocity;
-}
-
-double Gun::getBulletWeight() const {
-    return bulletWeight;
-}
-
-double Gun::getBallisticCoefficient() const {
-    return ballisticCoefficient;
 }
 
 double Gun::getZeroRange() const {
@@ -32,23 +25,22 @@ void Gun::setMuzzleVelocity(double muzzleVelocity) {
     Gun::muzzleVelocity = muzzleVelocity;
 }
 
-void Gun::setBulletWeight(double bulletWeight) {
-    Gun::bulletWeight = bulletWeight;
-}
-
-void Gun::setBallisticCoefficient(double ballisticCoefficient) {
-    Gun::ballisticCoefficient = ballisticCoefficient;
-}
-
 void Gun::setZeroRange(double zeroRange) {
     Gun::zeroRange = zeroRange;
 }
 
-//TODO: make it more realistic, current implementation is bad
-double Gun::getBulletDropRate(double distance) const {
-    const double g = 9.81;  // Gravity acceleration (m/s^2)
-    double timeInFlight = distance / muzzleVelocity;
-    double drop = 0.5 * g * timeInFlight * timeInFlight;
+Bullet &Gun::getBullet() {
+    return bullet;
+}
 
-    return drop;
+void Gun::setSightHeight(double sightHeight) {
+    Gun::sightHeight = sightHeight;
+}
+
+void Gun::setBullet(const Bullet &bullet) {
+    Gun::bullet = bullet;
+}
+
+double Gun::getSightHeight() const {
+    return sightHeight;
 }
