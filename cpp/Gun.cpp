@@ -44,3 +44,11 @@ void Gun::setBullet(const Bullet &bullet) {
 double Gun::getSightHeight() const {
     return sightHeight;
 }
+
+double Gun::getAimAdjustment() const {
+    return aimAdjustment;
+}
+
+void Gun::setAimAdjustment(double aimAdjustment) {
+    Gun::aimAdjustment = aimAdjustment;
+}

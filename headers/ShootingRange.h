@@ -38,7 +38,7 @@ public:
     [[nodiscard]] double getDistanceToTargetMeters() const;
     [[nodiscard]] const std::vector<Gun> &getGunList() const;
     [[nodiscard]] std::optional<Gun> getSelectedGun() const;
-    [[nodiscard]] const double getAirDensity() const;
-    [[nodiscard]] const double getGravity() const;
-    [[nodiscard]] const double getAimAdjustment(Gun &gun) const; // Total adjustment for aiming (in cm)
+    [[nodiscard]] double getAirDensity() const;
+    [[nodiscard]] double getGravity() const;
+    [[nodiscard]] double getAimAdjustment(Gun &gun) const; // Total adjustment for aiming (in cm)
 };

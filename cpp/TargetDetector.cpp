@@ -167,8 +167,7 @@ namespace TargetAid {
               accumulatorThreshold(accumulatorThreshold), maxTrackingFramesMissing(maxTrackingFrameMissing) {
     }
 
-    TargetDetector *
-    TargetDetector::getInstance(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold,
+    TargetDetector *TargetDetector::getInstance(int minRadius, int maxRadius, int cannyThreshold, int accumulatorThreshold,
                                 int maxTrackingFrameMissing) {
         if (instance == nullptr) {
             instance = new TargetDetector(minRadius, maxRadius, cannyThreshold, accumulatorThreshold,
