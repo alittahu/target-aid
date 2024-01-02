@@ -115,4 +115,20 @@ namespace TargetAid {
             if (cv::waitKey(30) >= 0) break;
         }
     }
+
+    void TargetDetector::process(const std::string &filePath) {
+        cv::Mat image = cv::imread(filePath, cv::IMREAD_COLOR);
+        if (!image.empty()) {
+            processImage(filePath);
+        } else {
+            // Try to open as a video
+            cv::VideoCapture cap(filePath);
+            if (cap.isOpened()) {
+                cap.release();
+                processVideo(filePath);
+            } else {
+                std::cout << "File format not recognized or file not found." << std::endl;
+            }
+        }
+    }
 }

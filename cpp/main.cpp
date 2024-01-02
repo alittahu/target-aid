@@ -12,22 +12,7 @@ int main(int argc, char **argv) {
 
     std::string filePath = argv[1];
 
-    TargetDetector *targetDetector = TargetDetector::getInstance();
-
-    // Try to open as an image first
-    cv::Mat image = cv::imread(filePath, cv::IMREAD_COLOR);
-    if (!image.empty()) {
-        targetDetector->processImage(filePath);
-    } else {
-        // Try to open as a video
-        cv::VideoCapture cap(filePath);
-        if (cap.isOpened()) {
-            cap.release();
-            targetDetector->processVideo(filePath);
-        } else {
-            std::cout << "File format not recognized or file not found." << std::endl;
-        }
-    }
+    TargetDetector::getInstance()->process(filePath);
 
     return 0;
 }

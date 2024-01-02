@@ -14,7 +14,10 @@ namespace TargetAid {
         int maxRadius; // Maximum radius of detected circles. Set this based on the largest circle size you expect to detect.
         int cannyThreshold; // The higher threshold of the two passed to the Canny edge detector. A lower value will detect more edges, while a higher value might miss some.
         int accumulatorThreshold; // Accumulator threshold for the circle centers at the detection stage. The smaller it is, the more false circles may be detected.
+
         void detectCircles(cv::Mat &image, std::vector<cv::Vec3f> &circles) const;
+        void processImage(const std::string &filePath);
+        void processVideo(const std::string &filePath, int maxFrameMissingTracking = 20);
     public:
         TargetDetector(const TargetDetector &) = delete;
 
@@ -34,8 +37,7 @@ namespace TargetAid {
         void setCannyThreshold(int cannyThreshold);
         void setAccumulatorThreshold(int accumulatorThreshold);
 
-        void processImage(const std::string &filePath);
-        void processVideo(const std::string &filePath, int maxFrameMissingTracking = 20);
+        void process(const std::string &filePath);
     };
 }
 
