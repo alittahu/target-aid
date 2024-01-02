@@ -54,7 +54,7 @@ namespace TargetAid {
         void enableSkipFramesForVideo(int processEveryNthFrame = 2);
 
         // Aim detection. Default targetDistance is 100 meters
-        void enableAimAssistant(int targetDistance = 100);
+        void enableAimAssistantForVideo(int targetDistance = 100);
 
         void process(const std::string &filePath);
 
